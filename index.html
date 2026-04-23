@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orçamento Online - Lavatórios</title>
+    <style>
+        :root {
+            --primary: #2c3e50; /* Cor sugerida: Grafite */
+            --accent: #d4af37;  /* Cor sugerida: Dourado/Latão */
+            --light: #f4f4f4;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--light); color: var(--primary); margin: 0; padding: 20px; }
+        .container { max-width: 600px; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin: auto; }
+        h1 { text-align: center; color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        select, input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .result-box { background: #eef2f3; padding: 15px; border-radius: 4px; margin-top: 20px; display: none; }
+        button { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; transition: 0.3s; }
+        button:hover { background: #1a252f; }
+        .whatsapp-btn { background: #25d366; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Orçamentista de Lavatórios</h1>
+    
+    <div class="form-group">
+        <label>Material / Cor:</label>
+        <select id="material">
+            <option value="500">Mármore Branco Carrara (R$ 500/m)</option>
+            <option value="350">Granito Preto São Gabriel (R$ 350/m)</option>
+            <option value="700">Quartzito Perla Santana (R$ 700/m)</option>
+            <option value="450">Branco Prime (Sintético) (R$ 450/m)</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Comprimento (cm):</label>
+        <input type="number" id="comprimento" placeholder="Ex: 100" required>
+    </div>
+
+    <div class="form-group">
+        <label>Largura (cm):</label>
+        <input type="number" id="largura" placeholder="Ex: 50" required>
+    </div>
+
+    <div class="form-group">
+        <label>Forma de Pagamento:</label>
+        <select id="pagamento">
+            <option value="0.9">À Vista (10% desconto)</option>
+            <option value="1">Cartão de Crédito (Sem juros)</option>
+            <option value="1.1">Parcelado 12x (10% acréscimo)</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>CEP (Cálculo de Envio):</label>
+        <input type="text" id="cep" placeholder="00000-000">
+    </div>
+
+    <button onclick="calcularOrcamento()">Calcular Orçamento</button>
+
+    <div id="resultado" class="result-box">
+        <strong>Resumo do Orçamento:</strong>
+        <p id="detalhe-preco"></p>
+        <p id="detalhe-envio"></p>
+        <p id="detalhe-prazo"></p>
+        <h3 id="total-final"></h3>
+        <button class="whatsapp-btn" onclick="enviarWhatsapp()">Enviar para Consultor (WhatsApp)</button>
+    </div>
+</div>
+
+<script>
+    function calcularOrcamento() {
+        const materialPreco = parseFloat(document.getElementById('material').value);
+        const comp = parseFloat(document.getElementById('comprimento').value) / 100;
+        const larg = parseFloat(document.getElementById('largura').value) / 100;
+        const pagamentoMod = parseFloat(document.getElementById('pagamento').value);
+        
+        if(!comp || !larg) { alert("Por favor, preencha as dimensões."); return; }
+
+        // Lógica de cálculo (Área x Preço Material)
+        const area = comp * larg;
+        let precoBase = area * materialPreco;
+        
+        // Simulação de frete fixo por região (exemplo simplificado)
+        const frete = 150.00; 
+        const prazo = "15 a 20 dias úteis";
+
+        const total = (precoBase * pagamentoMod) + frete;
+
+        document.getElementById('resultado').style.display = 'block';
+        document.getElementById('detalhe-preco').innerText = `Material: R$ ${precoBase.toFixed(2)}`;
+        document.getElementById('detalhe-envio').innerText = `Envio/Instalação: R$ ${frete.toFixed(2)}`;
+        document.getElementById('detalhe-prazo').innerText = `Prazo de Entrega: ${prazo}`;
+        document.getElementById('total-final').innerText = `Total: R$ ${total.toFixed(2)}`;
+    }
+
+    function enviarWhatsapp() {
+        const total = document.getElementById('total-final').innerText;
+        const material = document.getElementById('material').options[document.getElementById('material').selectedIndex].text;
+        const msg = encodeURIComponent(`Olá! Gostaria de confirmar meu orçamento:\nMaterial: ${material}\n${total}`);
+        window.open(`https://wa.me/SEUNUMEROAQUI?text=${msg}`);
+    }
+</script>
+
+</body>
+</html>
